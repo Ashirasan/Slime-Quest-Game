@@ -7,17 +7,14 @@ public class SlimeQuest {
 
     public static void main(String[] args) {
         JFrame window = new JFrame();
-        window.setTitle("Slime Quest");
-//        window.setDefaultCloseOperation(JFram.);
         window.setResizable(false);
+//        window.setSize(1280,960);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GamePanel gp = new GamePanel();
         window.add(gp);
-        window.pack();
-        
-        window.setLocationRelativeTo(null);
+        window.pack(); 
         window.setVisible(true);
-        gp.GameThreadStart();
-        
+        gp.gameThread.start();
     }
     
 }

@@ -2,333 +2,480 @@ package slimequest;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 public class UI {
 
     GamePanel gp;
-    KeyControl kc;
-    Font arial_40;
-    Font for_menu_text;
-    Font for_battle_stats;
-    int x = 0;
-    int y = 0;
-    //image
-    BufferedImage bg_menu,bg_battle,bg_gameOver;
+    BufferedImage main_menu, battle_menu;
+    Font pixelSan100sb, pixelSan60sb, pixelSan20sb;
+    Font pixelSan20r;
+    Font PixelMplus20r,PixelMplus40r,PixelMplus60r;
 
-    public UI(GamePanel gp, KeyControl kc) {
+    UI(GamePanel gp) {
         this.gp = gp;
-        this.kc = kc;
-        arial_40 = new Font("Arial", Font.BOLD, 40);
-        for_menu_text = new Font("Arial", Font.PLAIN, 30);
-        for_battle_stats = new Font("Arial", Font.BOLD, 20);
+        loadFont();
+        // load Image
         loadImage();
+
+    }
+///customFont/
+
+    private void loadFont() {
+        try {
+            pixelSan100sb = Font.createFont(Font.TRUETYPE_FONT, new File("PixelifySans-SemiBold.ttf")).deriveFont(100f);
+            pixelSan60sb = Font.createFont(Font.TRUETYPE_FONT, new File("PixelifySans-SemiBold.ttf")).deriveFont(60f);
+            pixelSan20sb = Font.createFont(Font.TRUETYPE_FONT, new File("PixelifySans-SemiBold.ttf")).deriveFont(20f);
+            pixelSan20r = Font.createFont(Font.TRUETYPE_FONT, new File("PixelifySans-Regular.ttf")).deriveFont(20f);
+
+            PixelMplus20r = Font.createFont(Font.TRUETYPE_FONT, new File("PixelMplus10-Regular.ttf")).deriveFont(20f);
+            PixelMplus40r = Font.createFont(Font.TRUETYPE_FONT, new File("PixelMplus10-Regular.ttf")).deriveFont(40f);
+            PixelMplus60r = Font.createFont(Font.TRUETYPE_FONT, new File("PixelMplus10-Regular.ttf")).deriveFont(80f);
+
+        } catch (IOException | FontFormatException e) {
+            System.out.println("Cant load font");
+        }
+    }
+
+    private void loadImage() {
+        try {
+            main_menu = ImageIO.read(getClass().getResourceAsStream("/picture/menu/main_menu.png"));
+            battle_menu = ImageIO.read(getClass().getResourceAsStream("/Picture/menu/battle_menu.png"));
+        } catch (IOException e) {
+            System.out.println("Cant load Image");
+        }
+    }
+
+    public void draw_main_menu(Graphics g) {
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = 3;
+
+        String text;
+        int x;
+        g.drawImage(main_menu, 0, 0, gp.max_width, gp.max_height, null);
+
+        g.setColor(Color.white);
+        g.setFont(pixelSan100sb);
+
+        text = "Slime Quest";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 150);
+
+        g.setFont(pixelSan60sb);
+        text = "New Game";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 250);
+        if (gp.ui_c.Num_command_Current == 1) {
+            g.drawString(">", x - 40, 250);
+        }
+
+        text = "Continous";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 350);
+        if (gp.ui_c.Num_command_Current == 2) {
+            g.drawString(">", x - 40, 350);
+        }
+
+        text = "Exit";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 450);
+        if (gp.ui_c.Num_command_Current == 3) {
+            g.drawString(">", x - 40, 450);
+        }
+
+    }
+
+    public void draw_battle_menu(Graphics g) {
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = 5;
+        String text, readtext;
+        int x, readx;
+        // backgound
+        g.drawImage(battle_menu, 0, 0, gp.max_width, gp.max_height, null);
+
+        // text title
+        g.setFont(pixelSan60sb);
+        text = "Battle Start";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 50);
+
+        // text menu
+        g.setFont(pixelSan20sb);
+        text = "Attack";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 365);
+        if (gp.ui_c.Num_command_Current == 1) {
+            g.drawString(">", x - 20, 365);
+        }
+
+        text = "Defense";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 405);
+        if (gp.ui_c.Num_command_Current == 2) {
+            g.drawString(">", x - 20, 405);
+        }
+
+        text = "Skill";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 445);
+        if (gp.ui_c.Num_command_Current == 3) {
+            g.drawString(">", x - 20, 445);
+        }
+
+        text = "Item";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 485);
+        if (gp.ui_c.Num_command_Current == 4) {
+            g.drawString(">", x - 20, 485);
+        }
+
+        text = "Run";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 525);
+        if (gp.ui_c.Num_command_Current == 5) {
+            g.drawString(">", x - 20, 525);
+        }
+
+        // Show player Stats
+        g.setFont(PixelMplus20r);
+        //LV
+        text = "Lv :";
+        g.drawString(text, 50, 365);
+        readtext = String.valueOf(gp.player_Stats.lv);
+        g.drawString(readtext, 100, 365);
+
+        //HP
+        text = "HP :";
+        g.drawString(text, 50, 405);
+        // current hp
+        readtext = String.valueOf(gp.player_Stats.currentHp);
+        g.drawString(readtext, 100, 405);
+        readx = getTextLength(readtext, g);
+        g.drawString("/", 100 + readx + 5, 405);
+        // Max hp
+        readtext = String.valueOf(gp.player_Stats.MaxHp);
+        g.drawString(readtext, 100 + readx + 5 + 15, 405);
+
+        //MP
+        text = "Mana :";
+        g.drawString(text, 50, 445);
+        readtext = String.valueOf(gp.player_Stats.currentMp);
+        g.drawString(readtext, 120, 445);
+        readx = getTextLength(readtext, g);
+        g.drawString("/", 120 + readx + 5, 445);
+        // Max hp
+        readtext = String.valueOf(gp.player_Stats.MaxMp);
+        g.drawString(readtext, 120 + readx + 5 + 15, 445);
+
+        //Atk
+        text = "Atk :";
+        g.drawString(text, 50, 485);
+        readtext = String.valueOf(gp.player_Stats.Atk);
+        g.drawString(readtext, 110, 485);
+
+        //Def
+        text = "Def :";
+        g.drawString(text, 50, 525);
+        readtext = String.valueOf(gp.player_Stats.Def);
+        g.drawString(readtext, 110, 525);
+
+        // Monster stats
+        //LV
+        text = "Lv :";
+        g.drawString(text, 540, 365);
+        readtext = String.valueOf(gp.monster_Stats.mLv);
+        g.drawString(readtext, 590, 365);
+
+        //HP
+        text = "HP :";
+        g.drawString(text, 540, 405);
+        // current hp
+        readtext = String.valueOf(gp.monster_Stats.mcurrentHp);
+        g.drawString(readtext, 590, 405);
+        readx = getTextLength(readtext, g);
+        g.drawString("/", 590 + readx + 5, 405);
+        // Max hp
+        readtext = String.valueOf(gp.monster_Stats.mMaxHp);
+        g.drawString(readtext, 590 + readx + 5 + 15, 405);
+
+        //Atk
+        text = "Atk :";
+        g.drawString(text, 540, 445);
+        readtext = String.valueOf(gp.monster_Stats.mAtk);
+        g.drawString(readtext, 600, 445);
+
+        //Def
+        text = "Def :";
+        g.drawString(text, 540, 485);
+        readtext = String.valueOf(gp.monster_Stats.mDef);
+        g.drawString(readtext, 600, 485);
+
+    }
+
+    public void draw_Item_Battle_menu(Graphics g) {
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = 4;
+        int x;
+        String text,textread;
+        g.fillRect(144, 265, 480, 288);
+        g.setColor(Color.gray);
+        g.fillRect(154, 275, 460, 268);
+        g.setColor(Color.black);
+        
+        g.setFont(PixelMplus40r);
+        text = "Inventory";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 320);
+        
+        g.setFont(PixelMplus20r);
+        
+        g.drawString("HP Potion", 190, 360);
+        textread = String.valueOf(gp.inventory.HpPotionHave);
+        g.drawString(textread, 420, 360);
+        if(gp.ui_c.Num_command_Current == 1){
+            g.drawString(">", 170, 360);
+        }
+        
+        g.drawString("Large HP Potion", 190, 390);
+        textread = String.valueOf(gp.inventory.LHpPotionHave);
+        g.drawString(textread, 420, 390);
+        if(gp.ui_c.Num_command_Current == 2){
+            g.drawString(">", 170, 390);
+        }
+        
+        g.drawString("Mana Potion", 190, 420);
+        textread = String.valueOf(gp.inventory.MpPotionHave);
+        g.drawString(textread, 420, 420);
+        if(gp.ui_c.Num_command_Current == 3){
+            g.drawString(">", 170, 420);
+        }
+        
+        g.drawString("Large Mana Potion", 190, 450);
+        textread = String.valueOf(gp.inventory.LMpPotionHave);
+        g.drawString(textread, 420, 450);
+        if(gp.ui_c.Num_command_Current == 4){
+            g.drawString(">", 170, 450);
+        }
+        
+        
+        g.drawString("Press 'Enter' to Use Item", 170, 490);
+        g.drawString("Press 'Esc' Back to Menu", 170, 520);
     }
     
-    public void loadImage(){
-        try{
-            bg_menu = ImageIO.read(getClass().getResourceAsStream("/res/bg/bg_menu.png"));
-            bg_battle = ImageIO.read(getClass().getResourceAsStream("/res/bg/bg_battle.png"));
-            bg_gameOver = ImageIO.read(getClass().getResourceAsStream("/res/bg/bg_gameOver.png"));
-        }catch(IOException e){
-            
+    public void draw_Skill_menu(Graphics g){
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = gp.skill.SkillList.length-1;
+        gp.skill.setSkill();
+//        System.out.print(gp.ui_c.Num_command_max);
+        int x,xread;
+        String text,textread;
+        g.fillRect(144, 265, 480, 288);
+        g.setColor(Color.gray);
+        g.fillRect(154, 275, 460, 268);
+        g.setColor(Color.black);
+        
+        g.setFont(PixelMplus40r);
+        text = "Skill Choose";
+        x = setcenter_X(text, g);
+        g.drawString(text, x, 320);
+        g.setFont(PixelMplus20r);
+        
+        text = gp.skill.SkillList[gp.ui_c.Num_command_Current];
+        x = setcenter_X(text, g);
+        xread = getTextLength(text, g);
+        g.drawString(text, x, 370);
+        g.drawString("<", x-20, 370);
+        g.drawString(">", x+xread+10, 370);
+        
+        g.drawString("Damage Scale Atk x", 200, 410);
+        g.drawString(String.valueOf(gp.skill.DamageScale), 400, 410);
+        g.drawString("Mana Use", 200, 440);
+        g.drawString(String.valueOf(gp.skill.ManaUse), 290, 440);
+        
+//        gp.skill.DamageScaleList[gp.ui_c.Num_command_Current]
+//        gp.skill.ManaList[gp.ui_c.Num_command_Current]
+
+        
+        g.drawString("Press 'Enter' to Use Skill", 170, 490);
+        g.drawString("Press 'Esc' Back to Menu", 170, 520);
+    }
+    
+    public void draw_menu_InGame(Graphics g){
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = 3;
+        int x,xread;
+        String text,textread;
+        g.fillRect(80, 80, 240, 340);
+        g.setColor(Color.gray);
+        g.fillRect(90, 90, 220, 320);
+        g.setColor(Color.black);
+        
+        g.setFont(PixelMplus40r);
+        g.drawString("Stats", 100, 130);
+        g.setFont(PixelMplus20r);
+        
+        g.drawString("Lv :", 100, 160);
+        g.drawString(String.valueOf(gp.player_Stats.lv), 150, 160);
+        
+        text = String.valueOf(gp.player_Stats.MaxHp);
+        textread = String.valueOf(gp.player_Stats.currentHp);
+        g.drawString("Hp :", 100, 190);
+        g.drawString(textread, 150, 190);
+        xread = getTextLength(textread, g);
+        g.drawString("/", 150+xread+10, 190);
+        g.drawString(text, 150+xread+10+20, 190);
+        
+        text = String.valueOf(gp.player_Stats.MaxMp);
+        textread = String.valueOf(gp.player_Stats.currentMp);
+        g.drawString("Mana :", 100, 220);
+        g.drawString(textread, 170, 220);
+        xread = getTextLength(textread, g);
+        g.drawString("/", 170+xread+10, 220);
+        g.drawString(text, 170+xread+10+20, 220);
+        
+        text = String.valueOf(gp.player_Stats.Atk);
+        textread = String.valueOf(gp.player_Stats.Atk);
+        g.drawString("Atk :", 100, 250);
+        g.drawString(textread, 160, 250);
+        
+        textread = String.valueOf(gp.player_Stats.Def);
+        g.drawString("Def :", 100, 280);
+        g.drawString(textread, 160, 280);
+        
+        text = String.valueOf(gp.player_Stats.MaxExp);
+        textread = String.valueOf(gp.player_Stats.currentExp);
+        g.drawString("Exp :", 100, 310);
+        g.drawString(textread, 160, 310);
+        xread = getTextLength(textread, g);
+        g.drawString("/", 170+xread+10, 310);
+        g.drawString(text, 170+xread+10+20, 310);
+        
+        g.setFont(PixelMplus40r);
+        g.drawString("Gold", 100, 355);
+        g.setFont(PixelMplus20r);
+        g.drawString(String.valueOf(gp.player_Stats.currentGold), 100, 380);
+        
+        
+    }
+    
+    public void draw_system(Graphics g){
+        g.setColor(Color.black);        
+        g.fillRect(450, 200, 240, 220);
+        g.setColor(Color.gray);
+        g.fillRect(460, 210, 220, 200);
+        g.setColor(Color.black); 
+        
+        g.setFont(PixelMplus40r);
+        g.drawString("Menu", 470, 250);
+        
+        g.drawString("Item", 500, 290);
+        if(gp.ui_c.Num_command_Current == 1){
+            g.drawString(">", 480, 290);
         }
+        g.drawString("Save", 500, 330);
+        if(gp.ui_c.Num_command_Current == 2){
+            g.drawString(">", 480, 330);
+        }
+        
+        g.drawString("Exit", 500, 370);
+        if(gp.ui_c.Num_command_Current == 3){
+            g.drawString(">", 480, 370);
+        } 
+    }
+    
+    public void draw_use_item_in_game(Graphics g){
+        g.setColor(Color.black);        
+        g.fillRect(450, 150, 240, 270);
+        g.setColor(Color.gray);
+        g.fillRect(460, 160, 220, 250);
+        g.setColor(Color.black); 
+        
+        g.setFont(PixelMplus40r);
+        g.drawString("Item", 470, 200);
+        
+        g.setFont(PixelMplus20r);
+        g.drawString("Hp Potion", 0, 0);
+    }
+    
+    public void draw_shop(Graphics g){
+        gp.ui_c.Num_command_min = 1;
+        gp.ui_c.Num_command_max = 5;
+        
+        g.setColor(Color.black);        
+        g.fillRect(100, 120, 560, 380);
+        g.setColor(Color.gray);
+        g.fillRect(110, 130, 540, 360);
+        g.setColor(Color.black); 
+        
+        
+        g.setFont(PixelMplus40r);
+        g.drawString("Welcome to my shop", 150, 190);
+        
+        g.setFont(PixelMplus20r);
+        g.drawString("Hp Potion", 170, 230);
+        g.drawString(String.valueOf(gp.shop.hpPotionPrice)+" G", 380, 230);
+        g.drawString(String.valueOf(gp.shop.hpPotionNum)+" ea", 470, 230);
+        if(gp.ui_c.Num_command_Current == 1){
+            g.drawString(">", 150, 230);
+        }
+        
+        g.drawString("Large Hp Potion", 170, 260);
+        g.drawString(String.valueOf(gp.shop.LhpPotionPrice)+" G", 380, 260);
+        g.drawString(String.valueOf(gp.shop.LhpPotionNum)+" ea", 470, 260);
+        if(gp.ui_c.Num_command_Current == 2){
+            g.drawString(">", 150, 260);
+        }
+        
+        g.drawString("Mana Potion", 170, 290);
+        g.drawString(String.valueOf(gp.shop.mpPotionPrice)+" G", 380, 290);
+        g.drawString(String.valueOf(gp.shop.mpPotionNum)+" ea", 470, 290);
+        if(gp.ui_c.Num_command_Current == 3){
+            g.drawString(">", 150, 290);
+        }
+        
+        g.drawString("Mana Potion", 170, 320);
+        g.drawString(String.valueOf(gp.shop.LmpPotionPrice)+" G", 380, 320);
+        g.drawString(String.valueOf(gp.shop.LmpPotionNum)+" ea", 470, 320);
+        if(gp.ui_c.Num_command_Current == 4){
+            g.drawString(">", 150, 320);
+        }
+        
+        if(gp.shop.totalPrice > gp.player_Stats.currentGold){
+            g.setColor(Color.red);
+        }else{
+            g.setColor(Color.black);
+        }
+        g.drawString("Total", 170, 360);
+        g.drawString(String.valueOf(gp.shop.totalPrice)+" G", 250, 360);
+        
+        g.setColor(Color.black);
+        g.drawString("Gold you have : "+String.valueOf(gp.player_Stats.currentGold)+" G", 170, 390);
+        
+        g.drawString("Confirm buy", 170, 420);
+        if(gp.ui_c.Num_command_Current == 5){
+            g.drawString(">", 150, 420);
+        }
+        
+        g.drawString("Press 'Esc' to exit shop", 170, 470);
     }
 
-    public void drawui(Graphics2D g2) {
-
-        if (gp.gameStatus == "menu") {
-            //set max min command
-            gp.uic.max = 3;
-            gp.uic.min = 1;
-            
-            g2.drawImage(bg_menu, 0,0,gp.ScreenWidth,gp.ScreenHeight,null);
-            g2.setFont(arial_40);
-            g2.setColor(Color.white);
-
-            String text;
-            text = "Slime Quest";
-
-            x = setcenter_X(text, g2);
-//            y=gp.ScreenHeight/2 - (gp.titlesize*3);  // set y center
-
-            g2.drawString(text, x, 120);
-
-            //Start
-            text = "New Game";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 300);
-            if (gp.uic.command == 1) {
-                g2.drawString(">", x - 30, 300);
-            }
-
-            //Start
-            text = "Continue";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 400);
-            if (gp.uic.command == 2) {
-                g2.drawString(">", x - 30, 400);
-            }
-
-            //Exit
-            text = "Exit";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 500);
-            if (gp.uic.command == 3) {
-                g2.drawString(">", x - 30, 500);
-            }
-
-        } else if (gp.gameStatus == "menu_in_game") {
-            String text;
-            String readtext;
-            gp.uic.max = 2;
-            gp.uic.min = 1;
-            g2.setFont(for_menu_text);
-
-            g2.setColor(Color.black);
-            g2.fillRect(30, 60, 250, 475);
-
-            g2.fillRect(500, 300, 150, 150);
-
-            g2.setColor(Color.white);
-
-            // Status  not have int stats
-            text = "Status";
-            g2.drawString(text, 50, 100);
-
-            text = "LV :";
-            g2.drawString(text, 50, 175);
-            readtext = String.valueOf(gp.ps.currentlv);
-            g2.drawString(readtext, 120, 175);
-
-            text = "HP :";
-            g2.drawString(text, 50, 250);
-            readtext = String.valueOf(gp.ps.currentHp);
-            g2.drawString(readtext, 120, 250);
-            int newX = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-            g2.drawString("/", 120 + newX + 10, 250);
-            readtext = String.valueOf(gp.ps.maxHp);
-            g2.drawString(readtext, 120 + newX + 30, 250);
-
-            text = "ATK :";
-            g2.drawString(text, 50, 325);
-            readtext = String.valueOf(gp.ps.atk);
-            g2.drawString(readtext, 135, 325);
-
-            text = "DEF :";
-            g2.drawString(text, 50, 400);
-            readtext = String.valueOf(gp.ps.def);
-            g2.drawString(readtext, 135, 400);
-
-            text = "EXP :";
-            g2.drawString(text, 50, 475);
-            readtext = String.valueOf(gp.ps.currentExp);
-            g2.drawString(readtext, 140, 475);
-            newX = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-            g2.drawString("/", 140 + newX + 10, 475);
-            readtext = String.valueOf(gp.ps.maxExp);
-            g2.drawString(readtext, 140 + newX + 30, 475);
-
-            // menu command
-            text = "Save";
-            g2.drawString(text, 550, 360);
-            if (gp.uic.command == 1) {
-                g2.drawString(">", 525, 360);
-            }
-
-            text = "Exit";
-            g2.drawString(text, 550, 410);
-            if (gp.uic.command == 2) {
-                g2.drawString(">", 525, 410);
-            }
-
-        } else if (gp.gameStatus == "battle") {
-            g2.drawImage(bg_battle, 0,0,gp.ScreenWidth,gp.ScreenHeight,null);
-//            gp.save.readSave();
-//            gp.ps.setStats();
-//            gp.es.setStats();
-            String text;
-            String readtext;
-
-            gp.uic.max = 3;
-            gp.uic.min = 1;
-
-            g2.setFont(arial_40);
-            g2.setColor(Color.black);
-            text = "Battle Start";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 50);
-            
-            
-            g2.setColor(Color.white);
-            g2.setFont(for_battle_stats);
-            
-            // player
-            text = "Lv :";
-            g2.drawString(text, 60, 110);
-            readtext = String.valueOf(gp.ps.currentlv);
-            g2.drawString(readtext, 110, 110);
-            text = "HP :";
-            g2.drawString(text, 60, 130);
-            readtext = String.valueOf(gp.ps.currentHp);
-            g2.drawString(readtext, 110, 130);
-            int newX = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-            g2.drawString("/", 110 + newX + 10, 130);
-            readtext = String.valueOf(gp.ps.maxHp);
-            g2.drawString(readtext, 110 + newX + 25, 130);
-            
-            
-            text = "ATK :";
-            g2.drawString(text, 60, 240);
-            readtext = String.valueOf(gp.ps.atk);
-            g2.drawString(readtext, 120, 240);
-            text = "DEF :";
-            g2.drawString(text, 60, 260);
-            readtext = String.valueOf(gp.ps.def);
-            g2.drawString(readtext, 120, 260);
-            text = "EXP :";
-            g2.drawString(text, 60, 280);
-            readtext = String.valueOf(gp.ps.currentExp);
-            g2.drawString(readtext, 120, 280);
-            newX = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-            g2.drawString("/", 120 + newX + 10, 280);
-            readtext = String.valueOf(gp.ps.maxExp);
-            g2.drawString(readtext, 120 + newX + 30, 280);
-
-            //enemy
-            text = "Lv :";
-            g2.drawString(text, 550, 110);
-            readtext = String.valueOf(gp.es.enemylv);
-            g2.drawString(readtext, 600, 110);
-            text = "HP :";
-            g2.drawString(text, 550, 130);
-            readtext = String.valueOf(gp.es.currentHp);
-            g2.drawString(readtext, 600, 130);
-            newX = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-            g2.drawString("/", 600 + newX + 10, 130);
-            readtext = String.valueOf(gp.es.maxHp);
-            g2.drawString(readtext, 600 + newX + 25, 130);
-            
-            
-            text = "ATK :";
-            g2.drawString(text, 550, 240);
-            readtext = String.valueOf(gp.es.atk);
-            g2.drawString(readtext, 610, 240);
-            text = "DEF :";
-            g2.drawString(text, 550, 260);
-            readtext = String.valueOf(gp.es.def);
-            g2.drawString(readtext, 610, 260);
-
-            //Command
-            text = "Attack";
-            g2.drawString(text, 125, 375);
-            if (gp.uic.command == 1) {
-                g2.drawString(">", 105, 375);
-            }
-
-            text = "Defence";
-            g2.drawString(text, 325, 375);
-            if (gp.uic.command == 2) {
-                g2.drawString(">", 305, 375);
-            }
-
-            text = "Run";
-            g2.drawString(text, 525, 375);
-            if (gp.uic.command == 3) {
-                g2.drawString(">", 505, 375);
-            }
-
-        } else if (gp.gameStatus == "gameOver") {
-            g2.drawImage(bg_gameOver, 0,0,gp.ScreenWidth,gp.ScreenHeight,null);
-            gp.uic.max = 2;
-            gp.uic.min = 1;
-            g2.setFont(arial_40);
-            g2.setColor(Color.white);
-
-            String text;
-            text = "Game Over";
-            x = setcenter_X(text, g2);
-//            y=gp.ScreenHeight/2 - (gp.titlesize*3);  // set y center
-            g2.drawString(text, x, 140);
-
-            //Return to menu
-            text = "Return to menu";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 450);
-            if (gp.uic.command == 1) {
-                g2.drawString(">", x - 30, 450);
-            }
-            //Exit
-            text = "Exit";
-            x = setcenter_X(text, g2);
-            g2.drawString(text, x, 500);
-            if (gp.uic.command == 2) {
-                g2.drawString(">", x - 30, 500);
-            }
-        }
-    }
-
-    public void dialog(Graphics2D g2) {
-        if (gp.gameStatus == "battle") {
-            if (gp.gl.dia == "attack") {
-                g2.setFont(for_battle_stats);
-                g2.setColor(Color.white);
-                String text;
-                String readtext = "1";
-
-                text = "You deal ";
-                g2.drawString(text, 100, 400);
-                if (gp.es.def < gp.ps.atk) {
-                    readtext = String.valueOf(gp.ps.atk - gp.es.def);
-                } else if (gp.es.def >= gp.ps.atk) {
-                    readtext = "1";
-                }
-                g2.drawString(readtext, 195, 400);
-                x = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-                g2.drawString("damage", 195 + x + 10, 400);
-
-                text = "You take ";
-                g2.drawString(text, 100, 425);
-                if (gp.ps.def < gp.es.atk) {
-                    readtext = String.valueOf(gp.es.atk - gp.ps.def);
-                } else if (gp.ps.def >= gp.es.atk) {
-                    readtext = "1";
-                }
-                g2.drawString(readtext, 195, 425);
-                x = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-                g2.drawString("damage", 195 + x + 10, 425);
-
-            } else if (gp.gl.dia == "defence") {
-                g2.setFont(for_battle_stats);
-                g2.setColor(Color.white);
-                String text;
-                String readtext = "1";
-
-                text = "You take ";
-                g2.drawString(text, 100, 400);
-                int newdef = gp.ps.def * 2;
-                if (newdef < gp.es.atk) {
-                    readtext = String.valueOf(gp.es.atk - newdef);
-                } else if (newdef >= gp.es.atk) {
-                    readtext = "1";
-                }
-                g2.drawString(readtext, 195, 400);
-                x = (int) g2.getFontMetrics().getStringBounds(readtext, g2).getWidth();
-                g2.drawString("damage", 195 + x + 10, 400);
-            }
-            
-        }
-    }
-
-    public int setcenter_X(String text, Graphics2D g2) {
+    public int setcenter_X(String text, Graphics g) {
         int text_L;
-        text_L = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-        int x = gp.ScreenWidth / 2 - text_L / 2;
+        text_L = (int) g.getFontMetrics().getStringBounds(text, g).getWidth();
+        int x = gp.max_width / 2 - text_L / 2;
         return x;
+    }
+
+    public int getTextLength(String text, Graphics g) {
+        int text_L;
+        text_L = (int) g.getFontMetrics().getStringBounds(text, g).getWidth();
+        return text_L;
     }
 
 }
